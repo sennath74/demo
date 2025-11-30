@@ -11,13 +11,20 @@ jobs:
   validate-branch:
     runs-on: ubuntu-latest
     steps:
-      - name: Check source branch
+      - name: Validate branch flow
         run: |
-          if [[ "${{ github.base_ref }}" == "develop" && "${{ github.head_ref }}" != feature/* ]]; then
-            echo "❌ Only feature/* branches can merge into develop"
-            exit 1
+          echo "Base: ${{ github.base_ref }} | Head: ${{ github.head_ref }}"
+          
+          if [[ "${{ github.base_ref }}" == "develop" ]]; then
+            if [[ "${{ github.head_ref }}" != feature/* ]]; then
+              echo "❌ Only feature/* branches can merge into develop"
+              exit 1
+            fi
           fi
-          if [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" != "develop" ]]; then
-            echo "❌ Only develop can merge into main"
-            exit 1
+          
+          if [[ "${{ github.base_ref }}" == "main" ]]; then
+            if [[ "${{ github.head_ref }}" != "develop" ]]; then
+              echo "❌ Only develop can merge into main"
+              exit 1
+            fi
           fi
