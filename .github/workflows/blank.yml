@@ -1,0 +1,23 @@
+# .github/workflows/branch-flow.yml
+name: Branch Flow Enforcement
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  validate-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        run: |
+          if [[ "${{ github.base_ref }}" == "develop" && "${{ github.head_ref }}" != feature/* ]]; then
+            echo "❌ Only feature/* branches can merge into develop"
+            exit 1
+          fi
+          if [[ "${{ github.base_ref }}" == "main" && "${{ github.head_ref }}" != "develop" ]]; then
+            echo "❌ Only develop can merge into main"
+            exit 1
+          fi
